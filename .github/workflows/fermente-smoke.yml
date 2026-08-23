@@ -1,0 +1,87 @@
+name: Fermente Runtime Smoke
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  runtime-smoke:
+    name: API and WebUI startup smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version
+
+      - name: Install dependencies
+        run: uv sync --frozen --python 3.11
+
+      - name: Prepare local config
+        run: cp config.example.toml config.toml
+
+      - name: Start API
+        run: |
+          nohup uv run --no-sync python main.py > /tmp/fermente-api.log 2>&1 &
+          echo $! > /tmp/fermente-api.pid
+
+      - name: Verify API health
+        shell: bash
+        run: |
+          for i in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8080/ping | grep -q pong; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/fermente-api.log || true
+          exit 1
+
+      - name: Start WebUI
+        run: |
+          nohup uv run --no-sync streamlit run ./webui/Main.py \
+            --server.headless=true \
+            --server.address=127.0.0.1 \
+            --server.port=8501 \
+            --browser.gatherUsageStats=false \
+            > /tmp/fermente-webui.log 2>&1 &
+          echo $! > /tmp/fermente-webui.pid
+
+      - name: Verify WebUI health
+        shell: bash
+        run: |
+          for i in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8501/_stcore/health | grep -qi ok; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/fermente-webui.log || true
+          exit 1
+
+      - name: Show logs on failure
+        if: failure()
+        run: |
+          echo '--- API log ---'
+          cat /tmp/fermente-api.log || true
+          echo '--- WebUI log ---'
+          cat /tmp/fermente-webui.log || true
