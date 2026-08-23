@@ -655,6 +655,11 @@ def prepare_cli_files(params: VideoParams, stop_at: str) -> None:
     from app.services import bgm as bgm_service
     from app.utils import utils
 
+    # FFmpeg 探测已经移到 app/services/task.py 的共享任务流水线（task.start）
+    # 里统一做硬性检查：探测失败会让任务以 preflight 阶段失败结束，run_cli()
+    # 会据此返回非零退出码。这里不再重复一次不阻断流程的检查，避免与流水线
+    # 里的判断结果不一致。
+
     local_material_extensions = {
         *(f".{extension}" for extension in const.FILE_TYPE_VIDEOS),
         *(f".{extension}" for extension in const.FILE_TYPE_IMAGES),
@@ -773,7 +778,15 @@ def run_cli(argv: Sequence[str] | None = None) -> int:
     task_id = args.task_id or utils.get_uuid()
     logger.info(f"start CLI task: task_id={task_id}, stop_at={args.stop_at}")
     try:
-        result = tm.start(task_id=task_id, params=params, stop_at=args.stop_at)
+        result = tm.start(
+            task_id=task_id,
+            params=params,
+            stop_at=args.stop_at,
+            # CLI inputs come from the local operator rather than an HTTP client.
+            # Preserve support for arbitrary local audio paths without weakening the
+            # task service's secure default for API and WebUI callers.
+            allow_server_file_input=True,
+        )
     except Exception as exc:
         logger.exception(
             f"CLI task failed with an unexpected error: task_id={task_id}, error={exc}"
