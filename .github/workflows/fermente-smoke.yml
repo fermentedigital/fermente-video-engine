@@ -9,7 +9,7 @@ on:
 
 jobs:
   runtime-smoke:
-    name: API and WebUI startup smoke
+    name: API, WebUI and render smoke
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -78,6 +78,31 @@ jobs:
           cat /tmp/fermente-webui.log || true
           exit 1
 
+      - name: Create deterministic local media
+        run: |
+          ffmpeg -y -f lavfi -i color=c=0x222222:s=1280x720:d=3:r=24 \
+            -c:v libx264 -pix_fmt yuv420p /tmp/fermente-smoke.mp4
+          ffmpeg -y -f lavfi -i anullsrc=r=44100:cl=stereo -t 3 \
+            -c:a pcm_s16le /tmp/fermente-smoke.wav
+
+      - name: Render local end-to-end sample
+        shell: bash
+        run: |
+          set -o pipefail
+          uv run --no-sync python cli.py \
+            --video-script "FERMENTE runtime smoke test." \
+            --video-source local \
+            --video-materials /tmp/fermente-smoke.mp4 \
+            --custom-audio-file /tmp/fermente-smoke.wav \
+            --no-subtitle-enabled \
+            --bgm-type none \
+            --video-aspect 16:9 \
+            --video-concat-mode sequential \
+            --stop-at video \
+            | tee /tmp/fermente-render.json
+          grep -q '"videos"' /tmp/fermente-render.json
+          find storage/tasks -type f -name '*.mp4' -size +1k | grep -q .
+
       - name: Show logs on failure
         if: failure()
         run: |
@@ -85,3 +110,7 @@ jobs:
           cat /tmp/fermente-api.log || true
           echo '--- WebUI log ---'
           cat /tmp/fermente-webui.log || true
+          echo '--- Render result ---'
+          cat /tmp/fermente-render.json || true
+          echo '--- Task files ---'
+          find storage/tasks -maxdepth 3 -type f -print 2>/dev/null || true
