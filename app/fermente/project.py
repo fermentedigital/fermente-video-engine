@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Literal
 
 
-Profile = Literal["short-ptbr", "youtube-long"]
+Profile = Literal["short-ptbr", "editorial-pilot", "youtube-long"]
 
 
 @dataclass(frozen=True)
@@ -59,6 +59,8 @@ class FermenteVideoProject:
             and self.expected_duration_seconds < 420
         ):
             errors.append("youtube-long expected_duration_seconds must be at least 420")
+        if self.profile == "editorial-pilot" and self.expected_duration_seconds and not 60 <= self.expected_duration_seconds <= 180:
+            errors.append("editorial-pilot expected_duration_seconds must be between 60 and 180")
         return errors
 
     def local_media(self, base: Path) -> list[Path]:
