@@ -21,7 +21,8 @@ jobs:
       - name: Create deterministic 1080p local fixtures
         run: |
           mkdir -p /tmp/pilot
-          for i in $(seq -w 1 15); do ffmpeg -y -f lavfi -i color=c=0x$((10#$i*111111)):s=1920x1080:d=6:r=24 -c:v libx264 -pix_fmt yuv420p /tmp/pilot/$i.mp4; done
+          colors=(102030 1b3550 24465f 315b73 3c6f82 467f8a 2c5a64 24636c 39777e 4a8588 5a7880 716f66 7c6958 506f7a 344f66)
+          for i in $(seq -w 1 15); do color="${colors[$((10#$i-1))]}"; ffmpeg -y -f lavfi -i color=c=0x${color}:s=1920x1080:d=6:r=24 -c:v libx264 -pix_fmt yuv420p /tmp/pilot/$i.mp4; done
           cp examples/fermente/ai-data-centers-water/project.json /tmp/pilot/project.json
           cp examples/fermente/ai-data-centers-water/editorial-review.json /tmp/pilot/editorial-review.json
       - name: Edge TTS baseline
