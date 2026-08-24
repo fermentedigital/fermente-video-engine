@@ -20,6 +20,11 @@ PRESETS = {
         "voice": "pt-BR-FranciscaNeural-Female",
         "clip": 3,
     },
+    "editorial-pilot": {
+        "aspect": "16:9",
+        "voice": "en-US-AndrewNeural-Male",
+        "clip": 6,
+    },
     "youtube-long": {"aspect": "16:9", "voice": "en-US-AndrewNeural-Male", "clip": 6},
 }
 
