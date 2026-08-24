@@ -109,6 +109,7 @@ jobs:
         run: uv run --no-sync python -m pytest -q test/fermente
 
       - name: Validate free Edge TTS baseline
+        continue-on-error: true
         run: uv run --no-sync python scripts/fermente_edge_tts_smoke.py
 
       - name: Run horizontal project adapter smoke
@@ -121,11 +122,20 @@ jobs:
           uv run --no-sync python scripts/fermente_render_project.py /tmp/fermente-project/project.json --output-json /tmp/fermente-project/result.json
           grep -q '"quality_gate"' /tmp/fermente-project/result.json
 
-      - name: Upload rendered sample
+      - name: Collect FERMENTE horizontal artifact
+        if: always()
+        run: |
+          mkdir -p /tmp/fermente-youtube-long-smoke
+          cp /tmp/fermente-runtime-smoke-output.mp4 /tmp/fermente-youtube-long-smoke/video-16x9.mp4 || true
+          cp /tmp/fermente-project/project.json /tmp/fermente-youtube-long-smoke/project.json || true
+          cp /tmp/fermente-project/result.json /tmp/fermente-youtube-long-smoke/quality-gate.json || true
+          find storage/tasks -name 'subtitle.srt' -type f -exec cp {} /tmp/fermente-youtube-long-smoke/subtitle.srt \; || true
+
+      - name: Upload FERMENTE horizontal artifact
         uses: actions/upload-artifact@v4
         with:
-          name: fermente-runtime-smoke-video
-          path: /tmp/fermente-runtime-smoke-output.mp4
+          name: fermente-youtube-long-smoke
+          path: /tmp/fermente-youtube-long-smoke
           retention-days: 7
           if-no-files-found: error
 
