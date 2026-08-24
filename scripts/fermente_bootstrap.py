@@ -68,8 +68,9 @@ def build_config(existing: dict | None = None) -> dict:
             "voice_name": "pt-BR-FranciscaNeural-Female",
             "voice_volume": 1.0,
             "voice_rate": 1.0,
-            "bgm_type": "random",
-            "bgm_volume": 0.12,
+            # FERMENTE never assumes that inherited upstream music is commercial-safe.
+            "bgm_type": "",
+            "bgm_volume": 0.0,
             "subtitle_enabled": True,
             "subtitle_position": "bottom",
             "font_size": 54,
@@ -134,7 +135,7 @@ def main() -> int:
         missing.append("PEXELS_API_KEY or PIXABAY_API_KEY")
 
     print(f"written: {TARGET}")
-    print("preset: pt-BR, 9:16, sequential scenes, 3s clips, Edge TTS")
+    print("preset: short-ptbr, 9:16, sequential scenes, 3s clips, Edge TTS, no music")
     if missing:
         print("missing for full automatic generation: " + ", ".join(missing))
     else:

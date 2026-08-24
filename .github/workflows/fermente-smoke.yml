@@ -105,6 +105,22 @@ jobs:
           test -n "$OUTPUT_VIDEO"
           cp "$OUTPUT_VIDEO" /tmp/fermente-runtime-smoke-output.mp4
 
+      - name: Run FERMENTE project contract and quality tests
+        run: uv run --no-sync python -m pytest -q test/fermente
+
+      - name: Validate free Edge TTS baseline
+        run: uv run --no-sync python scripts/fermente_edge_tts_smoke.py
+
+      - name: Run horizontal project adapter smoke
+        shell: bash
+        run: |
+          mkdir -p /tmp/fermente-project
+          cp examples/fermente/youtube-long-local.json /tmp/fermente-project/project.json
+          ffmpeg -y -f lavfi -i color=c=0x203040:s=1280x720:d=2:r=24 -c:v libx264 -pix_fmt yuv420p /tmp/fermente-project/scene-1.mp4
+          ffmpeg -y -f lavfi -i color=c=0x403020:s=1280x720:d=2:r=24 -c:v libx264 -pix_fmt yuv420p /tmp/fermente-project/scene-2.mp4
+          uv run --no-sync python scripts/fermente_render_project.py /tmp/fermente-project/project.json --output-json /tmp/fermente-project/result.json
+          grep -q '"quality_gate"' /tmp/fermente-project/result.json
+
       - name: Upload rendered sample
         uses: actions/upload-artifact@v4
         with:

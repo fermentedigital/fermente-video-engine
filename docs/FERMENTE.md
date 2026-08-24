@@ -33,6 +33,13 @@ A resposta esperada é `"pong"`.
 
 6. Abra a WebUI em `http://127.0.0.1:8501`.
 
+## Perfis FERMENTE
+
+- `short-ptbr`: Shorts em pt-BR, 9:16, 30–60 segundos.
+- `youtube-long`: vídeo editorial 16:9, normalmente 7–12 minutos, guiado por roteiro e cenas externos.
+
+Os dois mantêm legendas, Edge TTS como baseline gratuito, música desativada e publicação automática desativada. Veja `docs/FERMENTE_PRODUCTION.md` para o contrato `FermenteVideoProject`, quality gate e teste horizontal reproduzível.
+
 ## Configuração mínima para o piloto FERMENTE
 
 No WebUI/configuração, use inicialmente:

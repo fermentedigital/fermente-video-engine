@@ -1,0 +1,12 @@
+{
+  "title": "FERMENTE horizontal pipeline test",
+  "language": "en-US",
+  "profile": "youtube-long",
+  "expected_duration_seconds": 420,
+  "metadata": {"editorial_source": "external-script"},
+  "output": {"publish": false, "background_music": false},
+  "scenes": [
+    {"id": "opening", "narration": "This is a local, repeatable FERMENTE pipeline test.", "local_media": "scene-1.mp4", "media_query": "editorial opening", "media_type": "video", "priority": 1},
+    {"id": "body", "narration": "Each scene keeps its narration and media brief separate.", "local_media": "scene-2.mp4", "media_query": "editorial workflow", "media_type": "video", "priority": 2}
+  ]
+}
