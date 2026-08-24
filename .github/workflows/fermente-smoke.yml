@@ -106,7 +106,7 @@ jobs:
           cp "$OUTPUT_VIDEO" /tmp/fermente-runtime-smoke-output.mp4
 
       - name: Run FERMENTE project contract and quality tests
-        run: uv run --no-sync python -m pytest -q test/fermente
+        run: uv run --no-sync python -m pytest -q tests/test_fermente_bootstrap.py
 
       - name: Validate free Edge TTS baseline
         continue-on-error: true
