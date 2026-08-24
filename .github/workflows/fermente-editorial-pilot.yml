@@ -34,8 +34,12 @@ jobs:
         if: always()
         run: |
           mkdir -p /tmp/artifact
-          find storage/tasks -name '*.mp4' -exec cp {} /tmp/artifact/ai-data-centers-water-pilot.mp4 \; || true
-          find storage/tasks -name 'subtitle.srt' -exec cp {} /tmp/artifact/subtitle.srt \; || true
+          VIDEO="$(python -c 'import json; print(json.load(open("/tmp/pilot/quality-gate.json"))["video"])')"
+          test -f "$VIDEO"
+          ffprobe -v error -select_streams a -show_entries stream=codec_type -of csv=p=0 "$VIDEO" | grep -qx audio
+          cp "$VIDEO" /tmp/artifact/ai-data-centers-water-pilot.mp4
+          test -f "$(dirname "$VIDEO")/subtitle.srt"
+          cp "$(dirname "$VIDEO")/subtitle.srt" /tmp/artifact/subtitle.srt
           cp /tmp/pilot/project.json /tmp/artifact/project.json || true
           cp /tmp/pilot/quality-gate.json /tmp/artifact/quality-gate.json || true
           cp /tmp/pilot/editorial-review.json /tmp/artifact/editorial-review.json || true
