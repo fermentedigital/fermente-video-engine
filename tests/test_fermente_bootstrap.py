@@ -25,7 +25,8 @@ def test_fermente_preset_defaults(monkeypatch):
     assert ui["video_concat_mode"] == "sequential"
     assert ui["video_clip_duration"] == 3
     assert ui["voice_name"] == "pt-BR-FranciscaNeural-Female"
-    assert ui["bgm_volume"] == 0.12
+    assert ui["bgm_volume"] == 0.0
+    assert ui["bgm_type"] == ""
 
 
 def test_fermente_preset_reads_secrets_from_environment(monkeypatch):
