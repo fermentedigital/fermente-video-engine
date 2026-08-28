@@ -48,7 +48,7 @@
       <a href="https://www.volcengine.com/activity/ai618?utm_campaign=hw&utm_content=hw&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=MoneyPrinterTurbo"><strong>火山引擎</strong></a>
     </td>
     <td align="left">
-      感谢字节火山引擎赞助本项目！ <strong>【专属活动优惠】</strong>19元Tokens包！享字节自研豆包模型+满血版开源 SOTA模型，覆盖文本、VLM、图像生成，全模态一站配齐：Seed-2.1、Seedream-5.0、GLM-5.2、DeepSeek、Qwen等。不止编程，更能解决 Agent 复杂长程任务 --&gt; <a href="https://www.volcengine.com/activity/ai618?utm_campaign=hw&utm_content=hw&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=MoneyPrinterTurbo">注册即领2500万Tokens，立即前往</a>
+      感谢字节火山引擎赞助本项目！火山方舟 Agent/Coding Plan 国模套餐<strong>首购 9.9</strong>，支持 GLM-5.3、Kimi-K3、DeepSeek、MiniMax、Doubao 等，注册免费领 <strong>2500w Token</strong>，统一 API，适配编码与智能体开发。--&gt; <a href="https://www.volcengine.com/activity/ai618?utm_campaign=hw&utm_content=hw&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=MoneyPrinterTurbo">立即前往</a>
     </td>
   </tr>
   <tr>
@@ -62,15 +62,23 @@
   </tr>
   <tr>
     <td align="center" width="120">
-      <a href="https://infistar.ai/register?aff=6T4EYXP2&amp;ref_source=link"><img src="docs/sponsors/infistar-logo.svg" alt="Infistar.ai 无限星河" height="56"></a><br>
-      <a href="https://infistar.ai/register?aff=6T4EYXP2&amp;ref_source=link"><strong>Infistar.ai 无限星河</strong></a>
+      <a href="https://go.apimart.ai/gh-moneyprinterturbo"><img src="docs/sponsors/apimart-logo.png" alt="APIMart" width="100"></a>
     </td>
     <td align="left">
-      感谢 <a href="https://infistar.ai/register?aff=6T4EYXP2&amp;ref_source=link">Infistar.ai 无限星河</a> 赞助本项目！<br>
+      感谢 <a href="https://go.apimart.ai/gh-moneyprinterturbo">APIMart</a> 赞助了本项目！APIMart 是专注 AI 图片/视频生成的低价 API 平台，<strong>GPT-Image-2 低至 &#36;0.006/张，1 美元可出图 160+ 张</strong>。<strong>图片、视频一套异步 API 通吃，换模型不改代码</strong>；提交任务拿 ID，通过轮询或回调获取结果，支持万张级批量生成。按量付费、无月费，通过<a href="https://go.apimart.ai/gh-moneyprinterturbo">此注册链接</a>注册即可开用。
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="120">
+      <a href="https://infistar.cc/register?aff=6T4EYXP2&amp;ref_source=link"><img src="docs/sponsors/infistar-logo.svg" alt="Infistar.ai 无限星河" height="56"></a><br>
+      <a href="https://infistar.cc/register?aff=6T4EYXP2&amp;ref_source=link"><strong>Infistar.ai 无限星河</strong></a>
+    </td>
+    <td align="left">
+      感谢 <a href="https://infistar.cc/register?aff=6T4EYXP2&amp;ref_source=link">Infistar.ai 无限星河</a> 赞助本项目！<br>
       ⚡ 超低成本与稳定调度：价格低至官方 1 折，模型倍率与调用明细全程透明；多路供应动态调度，告别限流与断连困扰。<br>
       🧠 全系大模型完美驱动脚本：全面覆盖 OpenAI、Claude、Google Gemini、DeepSeek、通义千问（Qwen）等主流 LLM，兼容 OpenAI 标准接口，为 MoneyPrinterTurbo 的文案生成与素材关键词提炼提供低延迟、高并发支持。<br>
       🎨 前沿多模态生态：全面接入 FLUX、Midjourney、Seedance、可灵（Kling）、Sora、Luma 等顶级生图与视频模型，满足下一代 AI 视频生成需求。<br>
-      🎁 MoneyPrinterTurbo 用户专属福利：通过 <a href="https://infistar.ai/register?aff=6T4EYXP2&amp;ref_source=link">专属推广链接</a> 注册即享 [专属赠送额度 / 首充特惠]，开箱即用！
+      🎁 MoneyPrinterTurbo 用户专属福利：通过 <a href="https://infistar.cc/register?aff=6T4EYXP2&amp;ref_source=link">专属推广链接</a> 注册即享 [专属赠送额度 / 首充特惠]，开箱即用！
     </td>
   </tr>
   <tr>
@@ -142,6 +150,7 @@
 - [x] 支持 **背景音乐**，可随机选择或使用指定音乐，并调整音量
 - [x] 支持使用自己的 **本地素材**，也可从 **Pexels**、**Pixabay** 和 **Coverr** 获取可免费使用的高清素材
 - [x] 支持 **AI 生成素材**：接入 [WaveSpeed AI](https://wavespeed.ai) 文生视频模型（默认 Seedance），按脚本关键词直接生成全新画面，不再受限于库存素材
+- [x] 原生支持 **火山引擎方舟 Seedance** 文生视频，可配置模型或推理接入点 ID，并提供有限轮询与付费任务确认
 - [x] 支持 **Kimi / Moonshot AI**、**OpenAI**、**Anthropic Claude**、**Google Gemini**、**DeepSeek**、**阿里云通义千问**、**Microsoft Azure OpenAI**、**火山引擎方舟**、**xAI Grok**、**MiniMax**、**小米 MiMo** 等主流模型服务，并兼容 **Cloudflare AI Gateway**、**魔搭 ModelScope**、**AIHubMix**、**AIML API**、**EvoLink**、**Ollama**、**OneAPI**、**LiteLLM**、**Groq**、**Pollinations AI** 等统一网关、聚合平台和本地运行环境
 - [x] 支持一键 **跨平台发布**，生成完成后可自动上传至 **TikTok**、**Instagram** 和 **YouTube Shorts**
 - [x] 支持将生成设置**导出和导入**为预设文件，并在设置弹窗中备份和恢复所有 **API Key**
@@ -358,11 +367,27 @@ python main.py
 uv run python cli.py --video-subject "人工智能如何改变日常生活"
 ```
 
+字幕样式和配音参数按以下优先级取值：**命令行显式参数 > `config.toml` 中
+`[ui]` 保存的 WebUI 设置 > 内置默认值**。其余生成设置（如背景音乐、视频数量、
+段落数量等）不会自动沿用 WebUI 的保存值。若 WebUI 中选择了上传自备音频，
+命令行需要显式传入 `--custom-audio-file`，因为音频路径不会被保存。
+
 如需查看完整命令、参数说明和使用方法，可以执行：
 
 ```shell
 uv run python cli.py --help
 ```
+
+如需顺序执行多个任务，可通过 `--batch-file` 提供 UTF-8 JSON 数组或 JSONL
+清单。CLI 参数作为全局默认值，每个对象可覆盖 `VideoParams` 字段：
+
+```shell
+uv run python cli.py --batch-file ./tasks.json --stop-at video
+```
+
+清单最多包含 100 个任务且不超过 1 MiB。所有条目会在第一个任务启动前完成
+参数与本地文件预检；单个任务运行失败不会阻止后续条目，结束后会输出统一的
+JSON 汇总。清单中的相对自定义音频与本地素材路径以清单目录为基准。
 
 ## 语音合成 🗣
 
@@ -430,6 +455,24 @@ upload_post_youtube_privacy_status = "public"
 ```
 
 保存配置并重启项目。视频生成完成后，程序会自动发布到已配置的平台。YouTube 可见性可设置为 `public`、`unlisted` 或 `private`。
+
+</details>
+
+<details>
+<summary>如何使用火山引擎方舟官方 Seedance 素材源？</summary>
+
+创建[火山方舟 API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apikey)，然后在 `[app]` 下配置：
+
+```toml
+[app]
+volcengine_seedance_api_key = "your-ark-api-key"
+volcengine_seedance_model = "doubao-seedance-1-0-pro-250528"
+volcengine_seedance_base_url = "https://ark.cn-beijing.volces.com/api/v3"
+```
+
+Seedance 专用配置为空时，会依次使用 `VOLCENGINE_ARK_API_KEY` 环境变量和已有的 `volcengine_api_key` 大模型配置。在视频源中选择“火山引擎 Seedance”，并在生成前明确确认付费任务；CLI 还需要传入 `--confirm-seedance-charge`。
+
+首版仅支持文生视频。每个片段都会创建一个异步付费方舟任务；程序只轮询同一个任务 ID，状态不明时停止继续下单，并仅生成足够覆盖配音时长的素材。
 
 </details>
 

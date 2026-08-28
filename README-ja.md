@@ -62,15 +62,23 @@
   </tr>
   <tr>
     <td align="center" width="120">
-      <a href="https://infistar.ai/register?aff=6T4EYXP2&amp;ref_source=link"><img src="docs/sponsors/infistar-logo.svg" alt="Infistar.ai" height="56"></a><br>
-      <a href="https://infistar.ai/register?aff=6T4EYXP2&amp;ref_source=link"><strong>Infistar.ai</strong></a>
+      <a href="https://go.apimart.ai/gh-moneyprinterturbo"><img src="docs/sponsors/apimart-logo.png" alt="APIMart" width="100"></a>
     </td>
     <td align="left">
-      本プロジェクトをスポンサードしてくださっている <a href="https://infistar.ai/register?aff=6T4EYXP2&amp;ref_source=link">Infistar.ai</a> に感謝します！<br>
+      本プロジェクトをスポンサードしてくださっている <a href="https://go.apimart.ai/gh-moneyprinterturbo">APIMart</a> に感謝します！ APIMart は、AI 画像・動画生成に特化した低価格 API プラットフォームです。<strong>GPT-Image-2 は 1 枚あたり 0.006 米ドルから利用でき、1 米ドルで 160 枚以上の画像を生成できます</strong>。<strong>画像と動画を 1 つの非同期 API で扱い、コードを変更せずにモデルを切り替えられます</strong>。タスクを送信して ID を受け取った後、ポーリングまたはコールバックで結果を取得でき、数万枚規模のバッチ処理にも対応します。月額料金のない従量課金制で、<a href="https://go.apimart.ai/gh-moneyprinterturbo">こちらの登録リンク</a>からすぐに利用を開始できます。
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="120">
+      <a href="https://infistar.cc/register?aff=6T4EYXP2&amp;ref_source=link"><img src="docs/sponsors/infistar-logo.svg" alt="Infistar.ai" height="56"></a><br>
+      <a href="https://infistar.cc/register?aff=6T4EYXP2&amp;ref_source=link"><strong>Infistar.ai</strong></a>
+    </td>
+    <td align="left">
+      本プロジェクトをスポンサードしてくださっている <a href="https://infistar.cc/register?aff=6T4EYXP2&amp;ref_source=link">Infistar.ai</a> に感謝します！<br>
       ⚡ 低コストで信頼性の高いアクセス: 価格は公式レートのわずか 10% から。モデル倍率は透明で、詳細な利用履歴も確認できます。複数プロバイダーへの動的ルーティングにより、レート制限や予期しないサービス中断を回避できます。<br>
       🧠 台本作成に最適な最先端 LLM: OpenAI、Claude、Google Gemini、DeepSeek、Qwen などの主要モデルを OpenAI 互換 API 経由で利用できます。Infistar.ai は MoneyPrinterTurbo の台本生成と素材キーワード抽出のワークフローに、低レイテンシかつ高並列なサポートを提供します。<br>
       🎨 最先端のマルチモーダルエコシステム: FLUX、Midjourney、Seedance、Kling、Sora、Luma といった主要な画像・動画生成モデルを利用でき、次世代の AI 動画制作にすぐ活用できます。<br>
-      🎁 MoneyPrinterTurbo ユーザー限定特典: <a href="https://infistar.ai/register?aff=6T4EYXP2&amp;ref_source=link">専用の紹介リンク</a>から登録すると、[限定ボーナスクレジット / 初回チャージ特典] を受け取ってすぐに制作を始められます！
+      🎁 MoneyPrinterTurbo ユーザー限定特典: <a href="https://infistar.cc/register?aff=6T4EYXP2&amp;ref_source=link">専用の紹介リンク</a>から登録すると、[限定ボーナスクレジット / 初回チャージ特典] を受け取ってすぐに制作を始められます！
     </td>
   </tr>
   <tr>
@@ -130,6 +138,7 @@
 - [x] **字幕生成**に対応。フォント、位置、色、サイズ、縁取り、背景スタイルを設定できます
 - [x] ランダムまたはカスタムの **BGM** に対応し、音量も調整できます
 - [x] 手持ちの**ローカル素材**に加え、**Pexels**、**Pixabay**、**Coverr** の無料で使える高画質素材に対応
+- [x] ネイティブの **Volcano Engine Ark Seedance** テキスト動画生成に対応し、モデル／Endpoint ID、制限付きポーリング、有料タスク確認を設定できます
 - [x] **Kimi / Moonshot AI**、**OpenAI**、**Google Gemini**、**DeepSeek**、**Alibaba Cloud Qwen**、**Microsoft Azure OpenAI**、**ByteDance VolcEngine Ark**、**xAI Grok**、**MiniMax**、**Xiaomi MiMo** といった主要なモデルプロバイダーに加え、**Cloudflare AI Gateway**、**Alibaba ModelScope**、**AIHubMix**、**AIML API**、**EvoLink**、**Ollama**、**OneAPI**、**LiteLLM**、**Groq**、**Pollinations AI** などの統合ゲートウェイ、アグリゲーター、ローカルランタイムに対応
 - [x] 動画生成後、**TikTok**、**Instagram**、**YouTube Shorts** へワンクリックで**クロスプラットフォーム投稿**が可能
 - [x] 生成設定をプリセットファイルとして**エクスポート／インポート**でき、設定画面から **API キー**のバックアップと復元も可能
@@ -178,11 +187,11 @@
 - ローカル環境へのデプロイには Python 3.11 以降が必要です。Python 3.11 を推奨します
 - GPU は必須ではありませんが、ローカルでの文字起こしや動画処理を高速化したい場合、一括生成をより快適に行いたい場合には推奨されます
 
-| 項目 | 最低         | 推奨         | 最適           |
-| ---- | ------------ | ------------ | -------------- |
-| CPU  | 4 コア       | 6〜8 コア    | 8 コア以上     |
-| メモリ | 4 GB       | 8 GB         | 16 GB 以上     |
-| GPU  | 不要         | VRAM 4 GB 以上 | VRAM 8 GB 以上 |
+| 項目   | 最低   | 推奨           | 最適           |
+| ------ | ------ | -------------- | -------------- |
+| CPU    | 4 コア | 6〜8 コア      | 8 コア以上     |
+| メモリ | 4 GB   | 8 GB           | 16 GB 以上     |
+| GPU    | 不要   | VRAM 4 GB 以上 | VRAM 8 GB 以上 |
 
 - 主にクラウド LLM、クラウド TTS、オンライン素材ソースを利用する場合は、GPU よりも CPU とメモリのほうが重要です
 - `faster-whisper`、一括生成、負荷の高いローカル処理を利用する場合は、GPU によってスループットが目に見えて向上します
@@ -350,6 +359,19 @@ uv run python cli.py --video-subject "How AI is changing everyday life"
 uv run python cli.py --help
 ```
 
+複数のタスクを順番に実行するには、`--batch-file` で UTF-8 の JSON 配列または
+JSONL マニフェストを指定します。CLI オプションが共通の既定値となり、各オブジェクトで
+`VideoParams` フィールドを上書きできます。
+
+```shell
+uv run python cli.py --batch-file ./tasks.json --stop-at video
+```
+
+マニフェストは最大 100 タスク、1 MiB までです。最初のタスクを開始する前に全項目と
+ローカルファイルを検証し、個別タスクが失敗しても後続タスクを続行して最後に JSON
+サマリーを出力します。マニフェスト内の相対音声・ローカル素材パスはマニフェストの
+ディレクトリを基準に解決されます。
+
 ## 音声合成 🗣
 
 既定のプロバイダーは無料の **Edge TTS** で、WebUI 上では **Azure TTS V1** と表示されます。MoneyPrinterTurbo は **Azure TTS V2**、**SiliconFlow TTS**、**Google Gemini TTS**、**Xiaomi MiMo TTS**、**ElevenLabs TTS**、セルフホストの **Chatterbox TTS**、**Fish Audio TTS**、および音声なしモードにも対応しています。
@@ -416,6 +438,24 @@ upload_post_youtube_privacy_status = "public"
 ```
 
 保存後にアプリを再起動してください。以降、生成された動画は設定したプラットフォームへ自動的に投稿されます。YouTube の公開範囲は `public`、`unlisted`、`private` から設定できます。
+
+</details>
+
+<details>
+<summary>Volcano Engine Ark の公式 Seedance 素材ソースを使うには？</summary>
+
+[Ark API キー](https://console.volcengine.com/ark/region:ark+cn-beijing/apikey)を作成し、`[app]` に次を設定します:
+
+```toml
+[app]
+volcengine_seedance_api_key = "your-ark-api-key"
+volcengine_seedance_model = "doubao-seedance-1-0-pro-250528"
+volcengine_seedance_base_url = "https://ark.cn-beijing.volces.com/api/v3"
+```
+
+Seedance 専用設定が空の場合は、`VOLCENGINE_ARK_API_KEY` 環境変数、既存の LLM 用 `volcengine_api_key` 設定の順に使用します。動画ソースで **Volcano Engine Seedance** を選び、生成前に有料タスクを明示的に確認してください。CLI では `--confirm-seedance-charge` も必要です。
+
+初期実装はテキスト動画生成のみです。各クリップは有料の非同期 Ark タスクとして送信され、同じタスク ID だけをポーリングします。状態が不明な場合は追加送信を停止し、ナレーションを満たす分だけ生成します。
 
 </details>
 

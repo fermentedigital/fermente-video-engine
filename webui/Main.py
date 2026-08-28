@@ -48,6 +48,7 @@ from app.services import (
     llm,
     loomloom,
     video,
+    volcengine_seedance,
     voice,
     webui_task,
 )
@@ -98,6 +99,11 @@ VOICE_MODE_TTS = "tts"
 VOICE_MODE_UPLOAD = "upload"
 VOICE_MODE_NONE = "none"
 LOOMLOOM_MAX_POLL_FAILURES = 5
+# Upload-Post 的 API Key 与发布用户分别在两个页面管理，并且发布用户名称
+# 不等于登录邮箱。集中维护入口可以避免多语言文案各自硬编码 URL 后发生偏差，
+# 也方便用户从 WebUI 直接完成首次配置和后续账号维护。
+UPLOAD_POST_API_KEYS_URL = "https://app.upload-post.com/api-keys"
+UPLOAD_POST_MANAGE_USERS_URL = "https://app.upload-post.com/manage-users"
 # “默认”是 WebUI 专用哨兵，不会写入 config.toml，也不会传给 FFmpeg。
 # 后端在 video_codec 未配置时继续采用稳定的 libx264；单独保留该哨兵可以区分
 # “跟随项目默认策略”和“用户明确固定 libx264”，便于未来安全调整默认策略。
@@ -181,6 +187,10 @@ CREDENTIAL_COMPANION_KEYS = {
         for provider in LLM_PROVIDER_REGISTRY
         for field in provider.extra_fields
     ),
+}
+
+NON_LLM_COMPANION_KEYS = {
+    "app": ("upload_post_username",)
 }
 # 同一个密钥在不同面板可能使用各自的控件 key：音频面板直接编辑 Gemini 和
 # MiMo 的 LLM 密钥，胜算云密钥的控件没有 _input 后缀。恢复备份时必须清除
@@ -523,6 +533,7 @@ def _initialize_session_state():
         "loomloom_video_client_request_id": "",
         "loomloom_video_confirm_charge": False,
         "wavespeed_confirm_charge": False,
+        "volcengine_seedance_confirm_charge": False,
         # AI 视频按素材段计费，默认只生成一段，用户确认效果后再主动增加数量。
         "loomloom_video_scene_count": _saved_ui_number(
             "loomloom_video_scene_count",
@@ -860,14 +871,29 @@ def _collect_task_summaries(limit=20):
     return sorted(tasks, key=lambda item: item["mtime"], reverse=True)[:limit]
 
 
+def _is_headless_server():
+    # Docker 或无桌面的服务器部署中，WebUI 进程接触不到用户的桌面环境：
+    # xdg-open / webbrowser 只会在容器内静默失败。此时应改为浏览器内预览
+    # 视频、以路径提示代替打开目录。macOS/Windows 桌面部署不受影响。
+    if sys.platform == "darwin" or sys.platform.startswith("win"):
+        return False
+    return not (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
+
+
 def _open_task_path(task_path):
     tasks_root = os.path.abspath(utils.task_dir())
     normalized_path = os.path.abspath(task_path)
     if not normalized_path.startswith(tasks_root + os.sep):
         logger.warning(f"invalid task folder path: {normalized_path}")
         return
-    if os.path.isdir(normalized_path):
-        webbrowser.open(f"file://{normalized_path}")
+    if not os.path.isdir(normalized_path):
+        return
+    if _is_headless_server():
+        # storage 目录通常以卷挂载映射回宿主机，提示相对路径即可定位文件。
+        rel_path = os.path.relpath(normalized_path, os.path.dirname(tasks_root))
+        st.toast(f"{tr('Open Task Folder')}: ./storage/{rel_path}", icon="📂")
+        return
+    webbrowser.open(f"file://{normalized_path}")
 
 
 def _open_task_video(video_file):
@@ -881,6 +907,11 @@ def _open_task_video(video_file):
         return
     if not os.path.isfile(normalized_file):
         logger.warning(f"task video does not exist: {normalized_file}")
+        return
+
+    if _is_headless_server():
+        # 无桌面环境时在任务面板内嵌播放器预览，代替调用系统播放器。
+        st.session_state["task_preview_video_file"] = normalized_file
         return
 
     try:
@@ -1095,6 +1126,37 @@ def _render_task_manager_panel(tasks=None):
                 if status_key == "all" or _task_state_filter_key(task) == status_key
             ]
             _render_task_table(filtered_tasks, status_key)
+
+    _render_task_video_preview()
+
+
+def _render_task_video_preview():
+    # 无桌面部署下“播放”按钮的浏览器内回退：在任务面板底部渲染播放器。
+    preview_file = st.session_state.get("task_preview_video_file")
+    if not preview_file:
+        return
+
+    tasks_root = os.path.abspath(utils.task_dir())
+    if not (
+        preview_file.startswith(tasks_root + os.sep) and os.path.isfile(preview_file)
+    ):
+        st.session_state.pop("task_preview_video_file", None)
+        return
+
+    st.divider()
+    preview_cols = st.columns([5, 1], vertical_alignment="center")
+    task_name = os.path.basename(os.path.dirname(preview_file))
+    preview_cols[0].caption(f"{os.path.basename(preview_file)} · {task_name}")
+    closed = preview_cols[1].button(
+        "✕",
+        key="close_task_video_preview",
+        use_container_width=True,
+        help=tr("Close"),
+    )
+    if closed:
+        st.session_state.pop("task_preview_video_file", None)
+        return
+    st.video(preview_file)
 
 
 @st.fragment(run_every="2s")
@@ -2201,7 +2263,9 @@ def _is_backup_config_key(section_name, key):
     """凭据本身及其配套配置项都属于密钥备份范围。"""
     if _is_credential_config_key(key):
         return True
-    return key in CREDENTIAL_COMPANION_KEYS.get(section_name, ())
+    if key in CREDENTIAL_COMPANION_KEYS.get(section_name, ()):
+        return True
+    return key in NON_LLM_COMPANION_KEYS.get(section_name, ())
 
 
 def _credential_widget_state_keys(section_name, key):
@@ -2522,6 +2586,7 @@ def _render_settings_dialog():
             right_config_panel,
             key_backup_panel,
             cache_config_panel,
+            publish_config_panel,
             left_config_panel,
         ) = st.tabs(
             [
@@ -2529,9 +2594,88 @@ def _render_settings_dialog():
                 tr("Material API Tab"),
                 tr("Key Backup Tab"),
                 tr("Cache Management Tab"),
+                tr("Auto-Publish Settings"),
                 tr("Interface Settings Tab"),
             ]
         )
+
+        with publish_config_panel:
+            st.write(tr("Automatically publish generated videos to social media using upload-post.com"))
+            st.info(
+                tr("Upload-Post Setup Guide").format(
+                    api_keys_url=UPLOAD_POST_API_KEYS_URL,
+                    manage_users_url=UPLOAD_POST_MANAGE_USERS_URL,
+                )
+            )
+
+            is_enabled = config.app.get("upload_post_enabled", False)
+            is_auto = config.app.get("upload_post_auto_upload", False)
+
+            # 两个键各自独立:enabled 允许外部流程调用 Upload-Post,
+            # auto_upload 才决定渲染完成后是否自动发布。合并成一个复选框会在
+            # 两键不一致的配置下,仅打开设置对话框就把 enabled 改写为 False。
+            upload_post_enabled = st.checkbox(
+                tr("Enable Upload-Post Integration"),
+                value=is_enabled,
+                key="upload_post_enabled_checkbox"
+            )
+            if upload_post_enabled != is_enabled:
+                _set_runtime_config("app", "upload_post_enabled", upload_post_enabled)
+
+            upload_post_auto_upload = st.checkbox(
+                tr("Enable Auto-Publish"),
+                value=is_auto,
+                key="upload_post_auto_upload_checkbox"
+            )
+            if upload_post_auto_upload != is_auto:
+                _set_runtime_config("app", "upload_post_auto_upload", upload_post_auto_upload)
+
+            upload_post_api_key = st.text_input(
+                tr("Upload-Post API Key"),
+                value=config.app.get("upload_post_api_key", ""),
+                type="password",
+                help=tr("Upload-Post API Key Help").format(
+                    api_keys_url=UPLOAD_POST_API_KEYS_URL
+                ),
+                key="upload_post_api_key_input"
+            )
+            if upload_post_api_key != config.app.get("upload_post_api_key", ""):
+                _set_runtime_config("app", "upload_post_api_key", upload_post_api_key)
+
+            upload_post_username = st.text_input(
+                tr("Upload-Post Profile Username"),
+                value=config.app.get("upload_post_username", ""),
+                help=tr("Upload-Post Profile Username Help").format(
+                    manage_users_url=UPLOAD_POST_MANAGE_USERS_URL
+                ),
+                key="upload_post_username_input"
+            )
+            if upload_post_username != config.app.get("upload_post_username", ""):
+                _set_runtime_config("app", "upload_post_username", upload_post_username)
+
+            upload_post_platforms = st.multiselect(
+                tr("Platforms"),
+                options=["tiktok", "instagram", "youtube"],
+                default=config.app.get("upload_post_platforms", ["tiktok", "instagram"]),
+                help="Select platforms to publish to",
+                key="upload_post_platforms_multiselect"
+            )
+            if upload_post_platforms != config.app.get("upload_post_platforms", ["tiktok", "instagram"]):
+                _set_runtime_config("app", "upload_post_platforms", upload_post_platforms)
+
+            if "youtube" in upload_post_platforms:
+                yt_status_options = ["public", "private", "unlisted"]
+                yt_saved = config.app.get("upload_post_youtube_privacy_status", "public")
+                if yt_saved not in yt_status_options:
+                    yt_saved = "public"
+                upload_post_youtube_privacy_status = st.selectbox(
+                    tr("YouTube Privacy Status"),
+                    options=yt_status_options,
+                    index=yt_status_options.index(yt_saved),
+                    key="upload_post_youtube_privacy_status_selectbox"
+                )
+                if upload_post_youtube_privacy_status != config.app.get("upload_post_youtube_privacy_status", "public"):
+                    _set_runtime_config("app", "upload_post_youtube_privacy_status", upload_post_youtube_privacy_status)
 
         # 左侧面板 - 日志设置
         with left_config_panel:
@@ -2869,6 +3013,44 @@ def _render_settings_dialog():
                 key="wavespeed_api_keys_input",
             )
             _save_material_api_keys("wavespeed_api_keys", wavespeed_api_key)
+
+            seedance_api_key = st.text_input(
+                tr("Volcano Engine Ark API Key"),
+                value=str(config.app.get("volcengine_seedance_api_key", "") or ""),
+                type="password",
+                key="volcengine_seedance_api_key_input",
+            )
+            _set_runtime_config(
+                "app", "volcengine_seedance_api_key", seedance_api_key.strip()
+            )
+            seedance_model = st.text_input(
+                tr("Volcano Engine Seedance Model"),
+                value=str(
+                    config.app.get(
+                        "volcengine_seedance_model",
+                        volcengine_seedance.DEFAULT_MODEL_ID,
+                    )
+                    or volcengine_seedance.DEFAULT_MODEL_ID
+                ),
+                key="volcengine_seedance_model_input",
+            )
+            _set_runtime_config(
+                "app", "volcengine_seedance_model", seedance_model.strip()
+            )
+            seedance_base_url = st.text_input(
+                tr("Volcano Engine Ark Base URL"),
+                value=str(
+                    config.app.get(
+                        "volcengine_seedance_base_url",
+                        volcengine_seedance.DEFAULT_BASE_URL,
+                    )
+                    or volcengine_seedance.DEFAULT_BASE_URL
+                ),
+                key="volcengine_seedance_base_url_input",
+            )
+            _set_runtime_config(
+                "app", "volcengine_seedance_base_url", seedance_base_url.strip()
+            )
 
     _save_runtime_config()
 
@@ -3632,6 +3814,7 @@ def _render_video_settings(panel, params):
                 (tr("Pixabay"), "pixabay"),
                 (tr("Coverr"), "coverr"),
                 (tr("WaveSpeed AI Video"), "wavespeed"),
+                (tr("Volcano Engine Seedance"), "volcengine_seedance"),
                 (tr("Shengsuan Cloud AI Video"), "loomloom"),
                 (tr("Local file"), "local"),
             ]
@@ -3651,6 +3834,8 @@ def _render_video_settings(panel, params):
 
             if params.video_source == "wavespeed":
                 st.caption(tr("WaveSpeed AI Video Help"))
+            if params.video_source == "volcengine_seedance":
+                st.caption(tr("Volcano Engine Seedance Help"))
 
             if params.video_source == "local":
                 # Streamlit 的文件类型校验对扩展名大小写敏感，这里同时放行大小写两种形式。
@@ -3848,6 +4033,8 @@ def _render_video_settings(panel, params):
 
             if params.video_source == "wavespeed":
                 _render_wavespeed_video_settings(params)
+            if params.video_source == "volcengine_seedance":
+                _render_seedance_video_settings(params)
     return uploaded_files
 
 
@@ -3880,6 +4067,32 @@ def _render_wavespeed_video_settings(params):
         tr("Confirm WaveSpeed Charge"),
         key="wavespeed_confirm_charge",
         help=tr("Confirm WaveSpeed Charge Help"),
+    )
+
+
+def _render_seedance_video_settings(params):
+    """展示预计付费任务数量，并要求用户明确确认方舟生成费用。"""
+    clip_duration = max(int(params.video_clip_duration or 1), 1)
+    video_count = max(int(params.video_count or 1), 1)
+    estimated_range = _estimate_voiceover_duration_range(
+        str(params.video_script or ""), params.voice_rate
+    )
+    if estimated_range:
+        min_clips = max(math.ceil(estimated_range[0] * video_count / clip_duration), 1)
+        max_clips = max(
+            math.ceil(estimated_range[1] * video_count / clip_duration), min_clips
+        )
+        st.warning(
+            tr("Volcano Engine Seedance Billing Notice").format(
+                min=min_clips, max=max_clips
+            )
+        )
+    else:
+        st.warning(tr("Volcano Engine Seedance Billing Notice Without Script"))
+    st.checkbox(
+        tr("Confirm Volcano Engine Seedance Charge"),
+        key="volcengine_seedance_confirm_charge",
+        help=tr("Confirm Volcano Engine Seedance Charge Help"),
     )
 
 
@@ -5554,6 +5767,7 @@ def _render_generation_controls(
             "pixabay",
             "coverr",
             "wavespeed",
+            "volcengine_seedance",
             "loomloom",
             "local",
         ]:
@@ -5594,6 +5808,22 @@ def _render_generation_controls(
         ):
             _remove_active_generation_task(task_id)
             st.error(tr("Confirm WaveSpeed Charge Required"))
+            st.stop()
+
+        if params.video_source == "volcengine_seedance" and not (
+            volcengine_seedance.is_enabled(
+                config.snapshot_config_with_pending(config.app)
+            )
+        ):
+            _remove_active_generation_task(task_id)
+            st.error(tr("Please Enter the Volcano Engine Ark API Key"))
+            st.stop()
+
+        if params.video_source == "volcengine_seedance" and not st.session_state.get(
+            "volcengine_seedance_confirm_charge", False
+        ):
+            _remove_active_generation_task(task_id)
+            st.error(tr("Confirm Volcano Engine Seedance Charge Required"))
             st.stop()
 
         loomloom_video_request = None

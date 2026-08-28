@@ -48,7 +48,7 @@ Thanks to [Kimi](https://platform.kimi.ai?track_id=track-f6b0a640d35c41deb03b247
       <a href="https://www.byteplus.com/en/product/modelark?utm_campaign=hw&utm_content=MoneyPrinterTurbo&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=MoneyPrinterTurbo"><strong>BytePlus ModelArk</strong></a>
     </td>
     <td align="left">
-      Thanks to Dola Seed for sponsoring this project! <a href="https://www.byteplus.com/en/product/modelark?utm_campaign=hw&utm_content=MoneyPrinterTurbo&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=MoneyPrinterTurbo">Dola Seed 2.0</a> is a full-modal general large model independently developed by ByteDance for the global market. Built on a unified multimodal architecture, it supports joint understanding and generation of text, images, audio, and video. It natively enables agent collaboration, with strong reasoning, long-task execution, tool integration, and coding capabilities. Register via this link to get 500,000 tokens of free inference quota per model.
+      Thanks to ByteDance VolcEngine for sponsoring this project! VolcEngine Ark's Agent/Coding Plan for leading Chinese models starts at CNY 9.9 for first-time buyers and supports GLM-5.3, Kimi-K3, DeepSeek, MiniMax, Doubao, and more. New users receive 25 million free tokens. One unified API is designed for coding and agent development. --&gt; <a href="https://www.byteplus.com/en/product/modelark?utm_campaign=hw&utm_content=MoneyPrinterTurbo&utm_medium=devrel_tool_web&utm_source=OWO&utm_term=MoneyPrinterTurbo">Visit now</a>
     </td>
   </tr>
   <tr>
@@ -62,15 +62,23 @@ Thanks to [Kimi](https://platform.kimi.ai?track_id=track-f6b0a640d35c41deb03b247
   </tr>
   <tr>
     <td align="center" width="120">
-      <a href="https://infistar.ai/register?aff=6T4EYXP2&amp;ref_source=link"><img src="docs/sponsors/infistar-logo.svg" alt="Infistar.ai" height="56"></a><br>
-      <a href="https://infistar.ai/register?aff=6T4EYXP2&amp;ref_source=link"><strong>Infistar.ai</strong></a>
+      <a href="https://go.apimart.ai/gh-moneyprinterturbo"><img src="docs/sponsors/apimart-logo.png" alt="APIMart" width="100"></a>
     </td>
     <td align="left">
-      Thanks to <a href="https://infistar.ai/register?aff=6T4EYXP2&amp;ref_source=link">Infistar.ai</a> for sponsoring this project!<br>
+      Thanks to <a href="https://go.apimart.ai/gh-moneyprinterturbo">APIMart</a> for sponsoring this project! APIMart is a low-cost API platform for AI image &amp; video generation — <strong>GPT-Image-2 from &#36;0.006/image, 160+ images per dollar</strong>. <strong>One async API covers both image and video—switch models without changing code.</strong> Submit a task, get an ID, and fetch results via polling or callback. Batch tens of thousands of images without timeouts. Pay-as-you-go with no monthly fee — <a href="https://go.apimart.ai/gh-moneyprinterturbo">sign up here</a> to get started.
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="120">
+      <a href="https://infistar.cc/register?aff=6T4EYXP2&amp;ref_source=link"><img src="docs/sponsors/infistar-logo.svg" alt="Infistar.ai" height="56"></a><br>
+      <a href="https://infistar.cc/register?aff=6T4EYXP2&amp;ref_source=link"><strong>Infistar.ai</strong></a>
+    </td>
+    <td align="left">
+      Thanks to <a href="https://infistar.cc/register?aff=6T4EYXP2&amp;ref_source=link">Infistar.ai</a> for sponsoring this project!<br>
       ⚡ Low-cost, reliable access: pricing starts at just 10% of official rates, with transparent model multipliers and detailed usage records. Dynamic routing across multiple providers helps avoid rate limits and unexpected service interruptions.<br>
       🧠 Leading LLMs for script creation: access OpenAI, Claude, Google Gemini, DeepSeek, Qwen, and other leading models through an OpenAI-compatible API. Infistar.ai provides low-latency, high-concurrency support for MoneyPrinterTurbo's script generation and media keyword extraction workflows.<br>
       🎨 A cutting-edge multimodal ecosystem: access leading image and video generation models including FLUX, Midjourney, Seedance, Kling, Sora, and Luma, all ready for the next generation of AI video creation.<br>
-      🎁 Exclusive benefits for MoneyPrinterTurbo users: sign up through the <a href="https://infistar.ai/register?aff=6T4EYXP2&amp;ref_source=link">dedicated referral link</a> to receive [exclusive bonus credits / a first top-up offer] and start creating right away!
+      🎁 Exclusive benefits for MoneyPrinterTurbo users: sign up through the <a href="https://infistar.cc/register?aff=6T4EYXP2&amp;ref_source=link">dedicated referral link</a> to receive [exclusive bonus credits / a first top-up offer] and start creating right away!
     </td>
   </tr>
   <tr>
@@ -132,6 +140,7 @@ Thanks to [Kimi](https://platform.kimi.ai?track_id=track-f6b0a640d35c41deb03b247
 - [x] Supports random or custom **background music** with adjustable volume
 - [x] Supports your own **local assets** and free-to-use HD footage from **Pexels**, **Pixabay**, and **Coverr**
 - [x] Supports **AI-generated footage**: [WaveSpeed AI](https://wavespeed.ai) text-to-video models (Seedance by default) create brand-new visuals from your script keywords instead of relying on stock libraries
+- [x] Supports native **Volcano Engine Ark Seedance** text-to-video generation with configurable model/Endpoint ID, bounded polling, and paid-task confirmation
 - [x] Supports leading model providers including **Kimi / Moonshot AI**, **OpenAI**, **Anthropic Claude**, **Google Gemini**, **DeepSeek**, **Alibaba Cloud Qwen**, **Microsoft Azure OpenAI**, **ByteDance VolcEngine Ark**, **xAI Grok**, **MiniMax**, and **Xiaomi MiMo**, plus unified gateways, aggregators, and local runtimes such as **Cloudflare AI Gateway**, **Alibaba ModelScope**, **AIHubMix**, **AIML API**, **EvoLink**, **Ollama**, **OneAPI**, **LiteLLM**, **Groq**, and **Pollinations AI**
 - [x] Supports one-click **cross-platform publishing** to **TikTok**, **Instagram**, and **YouTube Shorts** after video generation
 - [x] Supports **exporting and importing generation settings** as a preset file, and backing up and restoring every **API key** from the settings dialog
@@ -347,12 +356,41 @@ command line. The simplest complete generation command is:
 uv run python cli.py --video-subject "How AI is changing everyday life"
 ```
 
+Subtitle style and voiceover options resolve in this order: **explicit CLI option >
+saved `[ui]` value in `config.toml` > built-in default**. Other generation settings,
+such as background music, video count, and paragraph count, are not inherited from
+the WebUI. If the WebUI is set to use uploaded audio, pass `--custom-audio-file`
+explicitly, since the uploaded path is not persisted.
+
 For the complete command reference, parameter descriptions, and usage instructions,
 run:
 
 ```shell
 uv run python cli.py --help
 ```
+
+To run several tasks sequentially, pass a UTF-8 JSON array or JSONL manifest. CLI
+options act as defaults, and each object overrides fields from `VideoParams`:
+
+```json
+[
+  { "video_subject": "How solar panels work" },
+  { "video_subject": "How wind turbines work", "video_aspect": "16:9" }
+]
+```
+
+```shell
+uv run python cli.py --batch-file ./tasks.json --stop-at video
+```
+
+The manifest is resolved from the current working directory. Relative
+`custom_audio_file` and local `video_materials[].url` values inside it are resolved
+from the manifest's directory; file paths supplied as CLI defaults keep their normal
+current-working-directory semantics. A manifest is limited to 100 tasks and 1 MiB.
+All entries are validated before the first task starts, tasks continue after an
+individual runtime failure, and the command prints one JSON summary when finished.
+The summary contains `total`, `succeeded`, `failed`, and `tasks`; each task entry has
+`index`, `task_id`, `status`, `result`, `failed_stage`, and `error`.
 
 ## Voice Synthesis 🗣
 
@@ -422,6 +460,24 @@ upload_post_youtube_privacy_status = "public"
 ```
 
 Restart the app after saving. Generated videos will then be published automatically to the configured platforms. YouTube privacy can be set to `public`, `unlisted`, or `private`.
+
+</details>
+
+<details>
+<summary>How do I use the official Volcano Engine Ark Seedance provider?</summary>
+
+Create an [Ark API key](https://console.volcengine.com/ark/region:ark+cn-beijing/apikey), then configure the provider under `[app]`:
+
+```toml
+[app]
+volcengine_seedance_api_key = "your-ark-api-key"
+volcengine_seedance_model = "doubao-seedance-1-0-pro-250528"
+volcengine_seedance_base_url = "https://ark.cn-beijing.volces.com/api/v3"
+```
+
+When the dedicated config value is empty, `VOLCENGINE_ARK_API_KEY` is used, followed by the existing `volcengine_api_key` LLM setting. Select **Volcano Engine Seedance** as the video source and explicitly confirm paid generation before starting. CLI users must add `--confirm-seedance-charge`.
+
+The first integration supports text-to-video only. Every submitted clip is a paid asynchronous Ark task; the app polls the same task ID, stops submitting after an unknown state, and downloads only enough clips to cover the voiceover.
 
 </details>
 
