@@ -1,0 +1,84 @@
+name: Fermente Seedance IPA Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_paid_generation:
+        description: Type YES to confirm paid Volcano Engine Seedance generation
+        required: true
+        default: "NO"
+
+jobs:
+  seedance-ipa:
+    if: ${{ inputs.confirm_paid_generation == 'YES' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      VOLCENGINE_ARK_API_KEY: ${{ secrets.VOLCENGINE_ARK_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: test/seedance-ipa-pilot
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          uv sync --frozen --python 3.11
+          cp config.example.toml config.toml
+
+      - name: Validate Seedance credential
+        run: |
+          if [ -z "$VOLCENGINE_ARK_API_KEY" ]; then
+            echo "Missing repository secret VOLCENGINE_ARK_API_KEY"
+            exit 2
+          fi
+
+      - name: Generate IPA pilot with Seedance
+        run: |
+          SCRIPT='Por que a IPA é tão amarga? A resposta está no lúpulo. Durante a fervura, os alfa-ácidos presentes em suas resinas se transformam em compostos solúveis que dão amargor à cerveja. Mas lúpulo não é só amargor. Seus óleos trazem aromas cítricos, florais, tropicais e resinosos. Por isso cada IPA pode ter uma personalidade diferente. O amargor equilibra o dulçor do malte e ajuda a criar um dos estilos mais marcantes da cerveja artesanal.'
+          TERMS='cinematic craft IPA beer pouring into a clean glass, macro fresh green hop cones on vine, brewer adding hops into boiling wort kettle, stainless brewery kettle vigorous boil, aromatic hop cones cinematic macro, hazy New England IPA glass close-up, clear West Coast IPA glass close-up, craft beer tasting sensory evaluation, multiple IPA styles on dark bar cinematic'
+          uv run --no-sync python cli.py \
+            --video-subject 'Por que a IPA é tão amarga?' \
+            --video-script "$SCRIPT" \
+            --video-terms "$TERMS" \
+            --video-language pt-BR \
+            --video-source volcengine_seedance \
+            --confirm-seedance-charge \
+            --video-aspect 9:16 \
+            --video-concat-mode sequential \
+            --video-clip-duration 3 \
+            --match-materials-to-script \
+            --voice-name pt-BR-FranciscaNeural-Female \
+            --voice-rate 1.0 \
+            --voice-volume 1.0 \
+            --bgm-type none \
+            --subtitle-enabled \
+            --subtitle-position bottom \
+            --font-size 54 \
+            --text-fore-color '#FFFFFF' \
+            --stroke-color '#000000' \
+            --stroke-width 2 \
+            --stop-at video | tee /tmp/seedance-result.json
+
+      - name: Collect final MP4 and metadata
+        if: always()
+        run: |
+          mkdir -p /tmp/artifact
+          find storage/tasks -type f -name '*.mp4' -print -exec cp {} /tmp/artifact/ \; || true
+          find storage/tasks -type f -name '*.srt' -print -exec cp {} /tmp/artifact/ \; || true
+          cp /tmp/seedance-result.json /tmp/artifact/result.json 2>/dev/null || true
+          ffprobe -v error -show_entries format=duration -of default=nw=1 /tmp/artifact/*.mp4 2>/dev/null || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fermente-seedance-ipa-test
+          path: /tmp/artifact
+          if-no-files-found: warn
