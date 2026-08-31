@@ -32,6 +32,24 @@ class TestCli(unittest.TestCase):
 
         self.assertEqual(params.voice_name, "zh-CN-XiaoxiaoNeural-Female")
 
+    def test_video_fit_mode_defaults_to_cover_and_accepts_contain(self):
+        default_params = cli.build_video_params(
+            cli.parse_args(["--video-subject", "test"])
+        )
+        contain_params = cli.build_video_params(
+            cli.parse_args(
+                [
+                    "--video-subject",
+                    "test",
+                    "--video-fit-mode",
+                    "contain",
+                ]
+            )
+        )
+
+        self.assertEqual(default_params.video_fit_mode.value, "cover")
+        self.assertEqual(contain_params.video_fit_mode.value, "contain")
+
     def test_complete_script_can_replace_video_subject(self):
         args = cli.parse_args(["--video-script", "完整的视频文案"])
         params = cli.build_video_params(args)
@@ -82,6 +100,43 @@ class TestCli(unittest.TestCase):
         self.assertEqual(kwargs["params"].video_subject, "命令行测试")
         self.assertIs(kwargs["allow_server_file_input"], True)
         print_mock.assert_called_once()
+
+    def test_force_utf8_console_keeps_unicode_result_printable(self):
+        """旧版 Windows 代码页下，成功结果中的 Unicode 字符不应让 CLI 失败。"""
+        stdout_buffer = io.BytesIO()
+        stderr_buffer = io.BytesIO()
+        # 使用 errors="strict" 还原问题现场：如果入口没有先切换到 UTF-8，
+        # U+202F 窄不换行空格和带圈数字都会在 cp1252 编码阶段直接抛异常。
+        legacy_stdout = io.TextIOWrapper(
+            stdout_buffer,
+            encoding="cp1252",
+            errors="strict",
+        )
+        legacy_stderr = io.TextIOWrapper(
+            stderr_buffer,
+            encoding="cp1252",
+            errors="strict",
+        )
+        result = {"script": "Température 18\u202f°C ⑤"}
+
+        with (
+            patch.object(cli.sys, "stdout", legacy_stdout),
+            patch.object(cli.sys, "stderr", legacy_stderr),
+            patch("app.services.task.start", return_value=result),
+            patch("app.utils.utils.get_uuid", return_value="task-unicode"),
+        ):
+            cli._force_utf8_console()
+            code = cli.run_cli(
+                ["--video-subject", "Unicode test", "--stop-at", "script"]
+            )
+            legacy_stdout.flush()
+
+        payload = json.loads(stdout_buffer.getvalue().decode("utf-8"))
+        self.assertEqual(code, 0)
+        self.assertEqual(legacy_stdout.encoding, "utf-8")
+        self.assertEqual(legacy_stderr.encoding, "utf-8")
+        self.assertEqual(payload["task_id"], "task-unicode")
+        self.assertEqual(payload["result"], result)
 
     def test_run_cli_returns_error_when_task_fails(self):
         with patch("app.services.task.start", return_value=None), patch(
